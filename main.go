@@ -1,8 +1,6 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/rulyadhika/fga_digitalent_assignment_2/app"
 	"github.com/rulyadhika/fga_digitalent_assignment_2/handler"
@@ -12,6 +10,7 @@ import (
 )
 
 func main() {
+	appConfig := app.GetAppConfig()
 	ginEngine := gin.Default()
 
 	db := app.InitiateDB()
@@ -21,13 +20,7 @@ func main() {
 
 	app.NewOrderRouter(ginEngine, orderHandler)
 
-	srv := http.Server{
-		Addr:    ":8080",
-		Handler: ginEngine,
-	}
-
-	err := srv.ListenAndServe()
-
+	// run the server
+	err := ginEngine.Run(":" + appConfig.SERVER_PORT)
 	helper.PanicIfErr(err)
-
 }

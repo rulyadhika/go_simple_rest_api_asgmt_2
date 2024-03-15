@@ -9,18 +9,12 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = ""
-	password = ""
-	dbName   = ""
-)
-
 func InitiateDB() *sql.DB {
-	dbInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbName)
+	appConfig := GetAppConfig()
 
-	db, err := sql.Open("postgres", dbInfo)
+	dbInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", appConfig.DB_HOST, appConfig.DB_PORT, appConfig.DB_USERNAME, appConfig.DB_PASSWORD, appConfig.DB_DATABASE)
+
+	db, err := sql.Open(appConfig.DB_DRIVER, dbInfo)
 
 	helper.PanicIfErr(err)
 
