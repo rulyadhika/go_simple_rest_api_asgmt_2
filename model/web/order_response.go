@@ -2,9 +2,9 @@ package web
 
 import "time"
 
-type itemResponse struct {
+type ItemResponse struct {
 	ItemId      uint   `json:"item_id"`
-	ItemCode    uint   `json:"item_code"`
+	ItemCode    string `json:"item_code"`
 	Description string `json:"description"`
 	Quantity    uint   `json:"quantity"`
 	OrderID     uint   `json:"order_id"`
@@ -14,5 +14,5 @@ type OrderResponse struct {
 	OrderId      uint           `json:"order_id"`
 	CustomerName string         `json:"customer_name"`
 	OrderedAt    time.Time      `json:"ordered_at"`
-	Items        []itemResponse `json:"items"`
+	Items        []ItemResponse `json:"items"`
 }

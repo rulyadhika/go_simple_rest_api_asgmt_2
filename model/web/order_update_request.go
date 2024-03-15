@@ -5,7 +5,7 @@ import "time"
 // tambah validate
 type itemUpdate struct {
 	ItemId      uint   `json:"item_id"`
-	ItemCode    uint   `json:"item_code"`
+	ItemCode    string `json:"item_code"`
 	Description string `json:"description"`
 	Quantity    uint   `json:"quantity"`
 	OrderID     uint   `json:"order_id"`

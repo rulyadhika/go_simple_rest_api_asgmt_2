@@ -1,17 +1,13 @@
 package app
 
 import (
-	"github.com/julienschmidt/httprouter"
+	"github.com/gin-gonic/gin"
 	"github.com/rulyadhika/fga_digitalent_assignment_2/handler"
 )
 
-func NewOrderRouter(orderHandler handler.OrderHandler) *httprouter.Router {
-	router := httprouter.New()
-
-	router.POST("/api/orders", orderHandler.Create)
-	router.GET("/api/orders/:orderId", orderHandler.FindOne)
-	router.PUT("/api/orders/:orderId", orderHandler.Update)
-	router.DELETE("/api/orders/:orderId", orderHandler.Delete)
-
-	return router
+func NewOrderRouter(r *gin.Engine, orderHandler handler.OrderHandler) {
+	r.POST("/api/orders", orderHandler.Create)
+	// r.GET("/api/orders/:orderId", orderHandler.FindOne)
+	// r.PUT("/api/orders/:orderId", orderHandler.Update)
+	// r.DELETE("/api/orders/:orderId", orderHandler.Delete)
 }

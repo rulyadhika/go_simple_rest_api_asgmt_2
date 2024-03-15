@@ -1,14 +1,13 @@
 package service
 
 import (
-	"context"
-
+	"github.com/gin-gonic/gin"
 	"github.com/rulyadhika/fga_digitalent_assignment_2/model/web"
 )
 
 type OrderService interface {
-	Create(ctx context.Context, request *web.OrderCreateRequest) *web.OrderResponse
-	FindOne(ctx context.Context, orderId uint) *web.OrderResponse
-	Update(ctx context.Context, request *web.OrderUpdateRequest) *web.OrderResponse
-	Delete(ctx context.Context, orderId uint)
+	Create(ctx *gin.Context, request *web.OrderCreateRequest) *web.OrderResponse
+	// FindOne(ctx *gin.Context, orderId uint) *web.OrderResponse
+	// Update(ctx *gin.Context, request *web.OrderUpdateRequest) *web.OrderResponse
+	// Delete(ctx *gin.Context, orderId uint)
 }
