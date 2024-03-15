@@ -14,7 +14,7 @@ func NewOrderRepositoryImpl() *OrderRepositoryImpl {
 	return &OrderRepositoryImpl{}
 }
 
-func (o *OrderRepositoryImpl) Create(ctx context.Context, tx *sql.Tx, order *domain.Order, items *[]domain.Item) (*domain.Order, *[]domain.Item) {
+func (o *OrderRepositoryImpl) Create(ctx context.Context, tx *sql.Tx, order domain.Order, items []domain.Item) (domain.Order, []domain.Item) {
 	orderQuery := `INSERT INTO "orders" (customer_name, ordered_at) VALUES ($1, $2) RETURNING order_id`
 
 	err := tx.QueryRowContext(ctx, orderQuery, order.CustomerName, order.OrderedAt).Scan(&order.OrderId)
@@ -26,8 +26,12 @@ func (o *OrderRepositoryImpl) Create(ctx context.Context, tx *sql.Tx, order *dom
 	helper.PanicIfErr(err)
 	defer itemQueryStatement.Close()
 
-	for _, item := range *items {
-		err := itemQueryStatement.QueryRowContext(ctx, item.ItemCode, item.Description, item.Quantity, order.OrderId).Scan(&item.ItemId)
+	for index, item := range items {
+		var itemId int
+		err := itemQueryStatement.QueryRowContext(ctx, item.ItemCode, item.Description, item.Quantity, order.OrderId).Scan(&itemId)
+
+		items[index].ItemId = uint(itemId)
+		items[index].OrderID = uint(order.OrderId)
 
 		helper.PanicIfErr(err)
 	}
