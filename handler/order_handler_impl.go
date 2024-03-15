@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rulyadhika/fga_digitalent_assignment_2/helper"
@@ -52,6 +53,20 @@ func (o *OrderHandlerImpl) FindAll(ctx *gin.Context) {
 // 	panic("not implemented") // TODO: Implement
 // }
 
-// func (o *OrderHandlerImpl) Delete(ctx *gin.Context) {
-// 	panic("not implemented") // TODO: Implement
-// }
+func (o *OrderHandlerImpl) Delete(ctx *gin.Context) {
+	orderId := ctx.Param("orderId")
+
+	id, err := strconv.Atoi(orderId)
+
+	helper.PanicIfErr(err)
+
+	o.OrderService.Delete(ctx, uint(id))
+
+	response := &web.WebResponse{
+		Status: http.StatusText(http.StatusOK),
+		Code:   http.StatusOK,
+		Data:   nil,
+	}
+
+	ctx.JSON(http.StatusOK, response)
+}

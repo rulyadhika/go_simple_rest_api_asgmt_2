@@ -66,6 +66,10 @@ func (o *OrderServiceImpl) FindAll(ctx *gin.Context) *[]web.OrderResponse {
 // 	panic("not implemented") // TODO: Implement
 // }
 
-// func (o *OrderServiceImpl) Delete(ctx *gin.Context, orderId uint) {
-// 	panic("not implemented") // TODO: Implement
-// }
+func (o *OrderServiceImpl) Delete(ctx *gin.Context, orderId uint) {
+	tx, err := o.DB.Begin()
+	helper.PanicIfErr(err)
+	defer helper.CommitOrRollbackTx(tx)
+
+	o.OrderRepository.Delete(ctx, tx, orderId)
+}

@@ -99,6 +99,12 @@ func (o *OrderRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) ([]domain
 // 	panic("not implemented") // TODO: Implement
 // }
 
-// func (o *OrderRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, orderId uint) {
-// 	panic("not implemented") // TODO: Implement
-// }
+func (o *OrderRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, orderId uint) {
+	sqlQuery := `DELETE FROM orders WHERE order_id=$1 RETURNING order_id`
+
+	var afectedId int
+
+	err := tx.QueryRowContext(ctx, sqlQuery, orderId).Scan(&afectedId)
+
+	helper.PanicIfErr(err)
+}
