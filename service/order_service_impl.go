@@ -45,9 +45,9 @@ func (o *OrderServiceImpl) Create(ctx *gin.Context, request *web.OrderCreateRequ
 		items = append(items, item)
 	}
 
-	orderResult, itemsResult := o.OrderRepository.Create(ctx, tx, &order, &items)
+	orderResult, itemsResult := o.OrderRepository.Create(ctx, tx, order, items)
 
-	return helper.ToOrderReponse(orderResult, itemsResult)
+	return helper.ToOrderReponse(&orderResult, &itemsResult)
 }
 
 // func (o *OrderServiceImpl) FindOne(ctx *gin.Context, orderId uint) *web.OrderResponse {
