@@ -36,9 +36,17 @@ func (o *OrderHandlerImpl) Create(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, response)
 }
 
-// func (o *OrderHandlerImpl) FindOne(ctx *gin.Context) {
-// 	panic("not implemented") // TODO: Implement
-// }
+func (o *OrderHandlerImpl) FindAll(ctx *gin.Context) {
+	result := o.OrderService.FindAll(ctx)
+
+	response := &web.WebResponse{
+		Status: http.StatusText(http.StatusOK),
+		Code:   http.StatusOK,
+		Data:   result,
+	}
+
+	ctx.JSON(http.StatusOK, response)
+}
 
 // func (o *OrderHandlerImpl) Update(ctx *gin.Context) {
 // 	panic("not implemented") // TODO: Implement

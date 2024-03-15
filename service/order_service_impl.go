@@ -50,9 +50,17 @@ func (o *OrderServiceImpl) Create(ctx *gin.Context, request *web.OrderCreateRequ
 	return helper.ToOrderReponse(&orderResult, &itemsResult)
 }
 
-// func (o *OrderServiceImpl) FindOne(ctx *gin.Context, orderId uint) *web.OrderResponse {
-// 	panic("not implemented") // TODO: Implement
-// }
+func (o *OrderServiceImpl) FindAll(ctx *gin.Context) *[]web.OrderResponse {
+	tx, err := o.DB.Begin()
+	helper.PanicIfErr(err)
+	defer helper.CommitOrRollbackTx(tx)
+
+	order, items, err := o.OrderRepository.FindAll(ctx, tx)
+
+	helper.PanicIfErr(err)
+
+	return helper.ToOrdersReponse(&order, &items)
+}
 
 // func (o *OrderServiceImpl) Update(ctx *gin.Context, request *web.OrderUpdateRequest) *web.OrderResponse {
 // 	panic("not implemented") // TODO: Implement
