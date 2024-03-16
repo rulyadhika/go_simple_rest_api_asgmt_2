@@ -49,9 +49,28 @@ func (o *OrderHandlerImpl) FindAll(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
-// func (o *OrderHandlerImpl) Update(ctx *gin.Context) {
-// 	panic("not implemented") // TODO: Implement
-// }
+func (o *OrderHandlerImpl) Update(ctx *gin.Context) {
+	orderId := ctx.Param("orderId")
+	id, err := strconv.Atoi(orderId)
+
+	helper.PanicIfErr(err)
+
+	orderUpdateRequest := &web.OrderUpdateRequest{}
+
+	ctx.ShouldBindJSON(orderUpdateRequest)
+
+	orderUpdateRequest.OrderId = uint(id)
+
+	result := o.OrderService.Update(ctx, orderUpdateRequest)
+
+	response := &web.WebResponse{
+		Code:   http.StatusOK,
+		Status: http.StatusText(http.StatusOK),
+		Data:   result,
+	}
+
+	ctx.JSON(http.StatusOK, response)
+}
 
 func (o *OrderHandlerImpl) Delete(ctx *gin.Context) {
 	orderId := ctx.Param("orderId")

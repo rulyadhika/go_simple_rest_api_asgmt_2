@@ -95,9 +95,28 @@ func (o *OrderRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) ([]domain
 	return orders, items, nil
 }
 
-// func (o *OrderRepositoryImpl) Update(ctx context.Context, tx *sql.Tx, order *domain.Order, items *[]domain.Item) (*domain.Order, *[]domain.Item) {
-// 	panic("not implemented") // TODO: Implement
-// }
+func (o *OrderRepositoryImpl) Update(ctx context.Context, tx *sql.Tx, order domain.Order, items []domain.Item) (domain.Order, []domain.Item) {
+	orderQuery := `UPDATE orders SET customer_name=$1, ordered_at=$2 WHERE order_id=$3 RETURNING order_id`
+
+	var affectedOrderRow int
+	err := tx.QueryRowContext(ctx, orderQuery, order.CustomerName, order.OrderedAt, order.OrderId).Scan(&affectedOrderRow)
+	helper.PanicIfErr(err)
+
+	itemQuery := `UPDATE items SET item_code=$1, description=$2, quantity=$3 WHERE item_id=$4 AND order_id=$5 RETURNING item_id`
+	itemQueryStatement, err := tx.PrepareContext(ctx, itemQuery)
+	helper.PanicIfErr(err)
+
+	for index, item := range items {
+		var affectedItemRow int
+
+		items[index].OrderID = order.OrderId
+		err := itemQueryStatement.QueryRowContext(ctx, item.ItemCode, item.Description, item.Quantity, item.ItemId, order.OrderId).Scan(&affectedItemRow)
+
+		helper.PanicIfErr(err)
+	}
+
+	return order, items
+}
 
 func (o *OrderRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, orderId uint) {
 	sqlQuery := `DELETE FROM orders WHERE order_id=$1 RETURNING order_id`

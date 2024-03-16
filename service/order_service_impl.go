@@ -62,9 +62,34 @@ func (o *OrderServiceImpl) FindAll(ctx *gin.Context) *[]web.OrderResponse {
 	return helper.ToOrdersReponse(&order, &items)
 }
 
-// func (o *OrderServiceImpl) Update(ctx *gin.Context, request *web.OrderUpdateRequest) *web.OrderResponse {
-// 	panic("not implemented") // TODO: Implement
-// }
+func (o *OrderServiceImpl) Update(ctx *gin.Context, request *web.OrderUpdateRequest) *web.OrderResponse {
+	tx, err := o.DB.Begin()
+	helper.PanicIfErr(err)
+	defer helper.CommitOrRollbackTx(tx)
+
+	order := domain.Order{
+		OrderId:      request.OrderId,
+		CustomerName: request.CustomerName,
+		OrderedAt:    request.OrderedAt,
+	}
+
+	items := []domain.Item{}
+
+	for _, item := range request.Items {
+		item := domain.Item{
+			ItemId:      item.ItemId,
+			ItemCode:    item.ItemCode,
+			Description: item.Description,
+			Quantity:    item.Quantity,
+		}
+
+		items = append(items, item)
+	}
+
+	orderResult, itemResult := o.OrderRepository.Update(ctx, tx, order, items)
+
+	return helper.ToOrderReponse(&orderResult, &itemResult)
+}
 
 func (o *OrderServiceImpl) Delete(ctx *gin.Context, orderId uint) {
 	tx, err := o.DB.Begin()
