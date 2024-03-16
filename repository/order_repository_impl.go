@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"sync"
 
 	"github.com/rulyadhika/fga_digitalent_assignment_2/helper"
@@ -43,7 +42,7 @@ func (o *OrderRepositoryImpl) Create(ctx context.Context, tx *sql.Tx, order doma
 
 func (o *OrderRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) ([]domain.Order, []domain.Item, error) {
 	sqlQuery := `SELECT orders.order_id, orders.customer_name, orders.ordered_at, items.item_id, items.item_code, items.description, items.quantity, items.order_id 
-	FROM orders JOIN items ON orders.order_id=items.order_id`
+	FROM orders LEFT JOIN items ON orders.order_id=items.order_id`
 
 	rows, err := tx.QueryContext(ctx, sqlQuery)
 	helper.PanicIfErr(err)
@@ -51,10 +50,6 @@ func (o *OrderRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) ([]domain
 
 	orders := []domain.Order{}
 	items := []domain.Item{}
-
-	if !rows.Next() {
-		return orders, items, errors.New("belum ada data yang disimpan")
-	}
 
 	wg := &sync.WaitGroup{}
 	mx := &sync.Mutex{}
