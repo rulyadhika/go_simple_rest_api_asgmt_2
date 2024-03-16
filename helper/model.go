@@ -33,3 +33,28 @@ func ToOrderReponse(order *domain.Order, items *[]domain.Item) *web.OrderRespons
 
 	return orderResponse
 }
+
+func ToOrdersReponse(orders *[]domain.Order, items *[]domain.Item) *[]web.OrderResponse {
+	ordersResponse := []web.OrderResponse{}
+
+	for _, order := range *orders {
+		orderItems := []domain.Item{}
+
+		for _, item := range *items {
+			if item.OrderID == order.OrderId {
+				orderItems = append(orderItems, item)
+			}
+		}
+
+		orderResponse := web.OrderResponse{
+			OrderId:      order.OrderId,
+			CustomerName: order.CustomerName,
+			OrderedAt:    order.OrderedAt,
+			Items:        *toItemResponse(&orderItems),
+		}
+
+		ordersResponse = append(ordersResponse, orderResponse)
+	}
+
+	return &ordersResponse
+}

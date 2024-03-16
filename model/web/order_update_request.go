@@ -8,7 +8,6 @@ type itemUpdate struct {
 	ItemCode    string `json:"item_code"`
 	Description string `json:"description"`
 	Quantity    uint   `json:"quantity"`
-	OrderID     uint   `json:"order_id"`
 }
 
 type OrderUpdateRequest struct {
