@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rulyadhika/fga_digitalent_assignment_2/helper"
+	"github.com/rulyadhika/fga_digitalent_assignment_2/exception"
 	"github.com/rulyadhika/fga_digitalent_assignment_2/model/web"
 	"github.com/rulyadhika/fga_digitalent_assignment_2/service"
 )
@@ -24,9 +24,17 @@ func (o *OrderHandlerImpl) Create(ctx *gin.Context) {
 	orderCreateRequest := &web.OrderCreateRequest{}
 
 	err := ctx.ShouldBindJSON(orderCreateRequest)
-	helper.PanicIfErr(err)
+	if err != nil {
+		ctx.Error(exception.NewUnprocessableEntityError("invalid json request body"))
+		return
+	}
 
-	result := o.OrderService.Create(ctx, orderCreateRequest)
+	result, err := o.OrderService.Create(ctx, orderCreateRequest)
+
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
 
 	response := web.WebResponse{
 		Status: http.StatusText(http.StatusCreated),
@@ -38,7 +46,12 @@ func (o *OrderHandlerImpl) Create(ctx *gin.Context) {
 }
 
 func (o *OrderHandlerImpl) FindAll(ctx *gin.Context) {
-	result := o.OrderService.FindAll(ctx)
+	result, err := o.OrderService.FindAll(ctx)
+
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
 
 	response := &web.WebResponse{
 		Status: http.StatusText(http.StatusOK),
@@ -53,15 +66,27 @@ func (o *OrderHandlerImpl) Update(ctx *gin.Context) {
 	orderId := ctx.Param("orderId")
 	id, err := strconv.Atoi(orderId)
 
-	helper.PanicIfErr(err)
+	if err != nil {
+		ctx.Error(exception.NewUnprocessableEntityError("invalid syntax for orderId param. Should be numeric type"))
+		return
+	}
 
 	orderUpdateRequest := &web.OrderUpdateRequest{}
 
-	ctx.ShouldBindJSON(orderUpdateRequest)
+	err = ctx.ShouldBindJSON(orderUpdateRequest)
+	if err != nil {
+		ctx.Error(exception.NewUnprocessableEntityError("invalid json request body"))
+		return
+	}
 
 	orderUpdateRequest.OrderId = uint(id)
 
-	result := o.OrderService.Update(ctx, orderUpdateRequest)
+	result, err := o.OrderService.Update(ctx, orderUpdateRequest)
+
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
 
 	response := &web.WebResponse{
 		Code:   http.StatusOK,
@@ -77,9 +102,17 @@ func (o *OrderHandlerImpl) Delete(ctx *gin.Context) {
 
 	id, err := strconv.Atoi(orderId)
 
-	helper.PanicIfErr(err)
+	if err != nil {
+		ctx.Error(exception.NewUnprocessableEntityError("invalid syntax for orderId param. Should be numeric type"))
+		return
+	}
 
-	o.OrderService.Delete(ctx, uint(id))
+	err = o.OrderService.Delete(ctx, uint(id))
+
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
 
 	response := &web.WebResponse{
 		Status: http.StatusText(http.StatusOK),

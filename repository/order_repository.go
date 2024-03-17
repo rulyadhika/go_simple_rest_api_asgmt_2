@@ -8,8 +8,8 @@ import (
 )
 
 type OrderRepository interface {
-	Create(ctx context.Context, tx *sql.Tx, order domain.Order, items []domain.Item) (domain.Order, []domain.Item)
-	FindAll(ctx context.Context, tx *sql.Tx) ([]domain.Order, []domain.Item, error)
-	Update(ctx context.Context, tx *sql.Tx, order domain.Order, items []domain.Item) (domain.Order, []domain.Item)
-	Delete(ctx context.Context, tx *sql.Tx, orderId uint)
+	Create(ctx context.Context, tx *sql.Tx, order domain.Order, items []domain.Item) (domain.Order, []domain.Item, error)
+	FindAll(ctx context.Context, db *sql.DB) ([]domain.Order, []domain.Item, error)
+	Update(ctx context.Context, tx *sql.Tx, order domain.Order, items []domain.Item) (domain.Order, []domain.Item, error)
+	Delete(ctx context.Context, db *sql.DB, orderId uint) error
 }

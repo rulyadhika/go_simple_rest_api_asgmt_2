@@ -2,6 +2,7 @@ package service
 
 import (
 	"database/sql"
+	"errors"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rulyadhika/fga_digitalent_assignment_2/helper"
@@ -22,11 +23,12 @@ func NewOrderServiceImpl(db *sql.DB, orderRepository repository.OrderRepository)
 		OrderRepository: orderRepository,
 	}
 }
-func (o *OrderServiceImpl) Create(ctx *gin.Context, request *web.OrderCreateRequest) *web.OrderResponse {
+func (o *OrderServiceImpl) Create(ctx *gin.Context, request *web.OrderCreateRequest) (*web.OrderResponse, error) {
 	tx, err := o.DB.Begin()
 
-	helper.PanicIfErr(err)
-	defer helper.CommitOrRollbackTx(tx)
+	if err != nil {
+		return &web.OrderResponse{}, errors.New("something went wrong")
+	}
 
 	order := domain.Order{
 		CustomerName: request.CustomerName,
@@ -45,27 +47,36 @@ func (o *OrderServiceImpl) Create(ctx *gin.Context, request *web.OrderCreateRequ
 		items = append(items, item)
 	}
 
-	orderResult, itemsResult := o.OrderRepository.Create(ctx, tx, order, items)
+	orderResult, itemsResult, err := o.OrderRepository.Create(ctx, tx, order, items)
 
-	return helper.ToOrderReponse(&orderResult, &itemsResult)
+	if err != nil {
+		errRollback := tx.Rollback()
+
+		if errRollback != nil {
+			err = errors.New("something went wrong")
+		}
+	} else {
+		errCommit := tx.Commit()
+
+		if errCommit != nil {
+			err = errors.New("something went wrong")
+		}
+	}
+
+	return helper.ToOrderReponse(&orderResult, &itemsResult), err
 }
 
-func (o *OrderServiceImpl) FindAll(ctx *gin.Context) *[]web.OrderResponse {
-	tx, err := o.DB.Begin()
-	helper.PanicIfErr(err)
-	defer helper.CommitOrRollbackTx(tx)
+func (o *OrderServiceImpl) FindAll(ctx *gin.Context) (*[]web.OrderResponse, error) {
+	order, items, err := o.OrderRepository.FindAll(ctx, o.DB)
 
-	order, items, err := o.OrderRepository.FindAll(ctx, tx)
-
-	helper.PanicIfErr(err)
-
-	return helper.ToOrdersReponse(&order, &items)
+	return helper.ToOrdersReponse(&order, &items), err
 }
 
-func (o *OrderServiceImpl) Update(ctx *gin.Context, request *web.OrderUpdateRequest) *web.OrderResponse {
+func (o *OrderServiceImpl) Update(ctx *gin.Context, request *web.OrderUpdateRequest) (*web.OrderResponse, error) {
 	tx, err := o.DB.Begin()
-	helper.PanicIfErr(err)
-	defer helper.CommitOrRollbackTx(tx)
+	if err != nil {
+		return &web.OrderResponse{}, errors.New("something went wrong")
+	}
 
 	order := domain.Order{
 		OrderId:      request.OrderId,
@@ -86,15 +97,27 @@ func (o *OrderServiceImpl) Update(ctx *gin.Context, request *web.OrderUpdateRequ
 		items = append(items, item)
 	}
 
-	orderResult, itemResult := o.OrderRepository.Update(ctx, tx, order, items)
+	orderResult, itemResult, err := o.OrderRepository.Update(ctx, tx, order, items)
 
-	return helper.ToOrderReponse(&orderResult, &itemResult)
+	if err != nil {
+		errRollback := tx.Rollback()
+
+		if errRollback != nil {
+			err = errors.New("something went wrong")
+		}
+	} else {
+		errCommit := tx.Commit()
+
+		if errCommit != nil {
+			err = errors.New("something went wrong")
+		}
+	}
+
+	return helper.ToOrderReponse(&orderResult, &itemResult), err
 }
 
-func (o *OrderServiceImpl) Delete(ctx *gin.Context, orderId uint) {
-	tx, err := o.DB.Begin()
-	helper.PanicIfErr(err)
-	defer helper.CommitOrRollbackTx(tx)
+func (o *OrderServiceImpl) Delete(ctx *gin.Context, orderId uint) error {
+	err := o.OrderRepository.Delete(ctx, o.DB, orderId)
 
-	o.OrderRepository.Delete(ctx, tx, orderId)
+	return err
 }

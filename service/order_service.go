@@ -6,8 +6,8 @@ import (
 )
 
 type OrderService interface {
-	Create(ctx *gin.Context, request *web.OrderCreateRequest) *web.OrderResponse
-	FindAll(ctx *gin.Context) *[]web.OrderResponse
-	Update(ctx *gin.Context, request *web.OrderUpdateRequest) *web.OrderResponse
-	Delete(ctx *gin.Context, orderId uint)
+	Create(ctx *gin.Context, request *web.OrderCreateRequest) (*web.OrderResponse, error)
+	FindAll(ctx *gin.Context) (*[]web.OrderResponse, error)
+	Update(ctx *gin.Context, request *web.OrderUpdateRequest) (*web.OrderResponse, error)
+	Delete(ctx *gin.Context, orderId uint) error
 }
