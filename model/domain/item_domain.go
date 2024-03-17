@@ -1,9 +1,13 @@
 package domain
 
+import "time"
+
 type Item struct {
 	ItemId      uint
 	ItemCode    string
 	Description string
 	Quantity    uint
-	OrderID     uint
+	OrderId     uint
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
