@@ -3,16 +3,20 @@ package web
 import "time"
 
 type ItemResponse struct {
-	ItemId      uint   `json:"item_id"`
-	ItemCode    string `json:"item_code"`
-	Description string `json:"description"`
-	Quantity    uint   `json:"quantity"`
-	OrderID     uint   `json:"order_id"`
+	ItemId      uint      `json:"itemId"`
+	ItemCode    string    `json:"itemCode"`
+	Description string    `json:"description"`
+	Quantity    uint      `json:"quantity"`
+	OrderId     uint      `json:"orderId"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
 type OrderResponse struct {
-	OrderId      uint           `json:"order_id"`
-	CustomerName string         `json:"customer_name"`
-	OrderedAt    time.Time      `json:"ordered_at"`
+	OrderId      uint           `json:"orderId"`
+	CustomerName string         `json:"customerName"`
+	OrderedAt    time.Time      `json:"orderedAt"`
+	CreatedAt    time.Time      `json:"createdAt"`
+	UpdatedAt    time.Time      `json:"updatedAt"`
 	Items        []ItemResponse `json:"items"`
 }

@@ -11,7 +11,6 @@ import (
 	"github.com/rulyadhika/fga_digitalent_assignment_2/repository"
 )
 
-// tambah validasi
 type OrderServiceImpl struct {
 	DB              *sql.DB
 	OrderRepository repository.OrderRepository
@@ -92,6 +91,7 @@ func (o *OrderServiceImpl) Update(ctx *gin.Context, request *web.OrderUpdateRequ
 			ItemCode:    item.ItemCode,
 			Description: item.Description,
 			Quantity:    item.Quantity,
+			OrderId:     request.OrderId,
 		}
 
 		items = append(items, item)

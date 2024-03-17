@@ -14,7 +14,9 @@ func toItemResponse(items *[]domain.Item) *[]web.ItemResponse {
 			ItemCode:    item.ItemCode,
 			Description: item.Description,
 			Quantity:    item.Quantity,
-			OrderID:     item.OrderID,
+			OrderId:     item.OrderId,
+			CreatedAt:   item.CreatedAt,
+			UpdatedAt:   item.UpdatedAt,
 		}
 
 		itemsResponse = append(itemsResponse, itemResponse)
@@ -28,6 +30,8 @@ func ToOrderReponse(order *domain.Order, items *[]domain.Item) *web.OrderRespons
 		OrderId:      order.OrderId,
 		CustomerName: order.CustomerName,
 		OrderedAt:    order.OrderedAt,
+		CreatedAt:    order.CreatedAt,
+		UpdatedAt:    order.UpdatedAt,
 		Items:        *toItemResponse(items),
 	}
 
@@ -41,7 +45,7 @@ func ToOrdersReponse(orders *[]domain.Order, items *[]domain.Item) *[]web.OrderR
 		orderItems := []domain.Item{}
 
 		for _, item := range *items {
-			if item.OrderID == order.OrderId {
+			if item.OrderId == order.OrderId {
 				orderItems = append(orderItems, item)
 			}
 		}
@@ -50,6 +54,8 @@ func ToOrdersReponse(orders *[]domain.Order, items *[]domain.Item) *[]web.OrderR
 			OrderId:      order.OrderId,
 			CustomerName: order.CustomerName,
 			OrderedAt:    order.OrderedAt,
+			CreatedAt:    order.CreatedAt,
+			UpdatedAt:    order.UpdatedAt,
 			Items:        *toItemResponse(&orderItems),
 		}
 

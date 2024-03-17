@@ -4,14 +4,13 @@ import "time"
 
 // tambah validate
 type itemCreate struct {
-	ItemCode    string `json:"item_code"`
+	ItemCode    string `json:"itemCode"`
 	Description string `json:"description"`
 	Quantity    uint   `json:"quantity"`
-	OrderID     uint   `json:"order_id"`
 }
 
 type OrderCreateRequest struct {
-	CustomerName string       `json:"customer_name"`
-	OrderedAt    time.Time    `json:"ordered_at"`
+	CustomerName string       `json:"customerName"`
+	OrderedAt    time.Time    `json:"orderedAt"`
 	Items        []itemCreate `json:"items"`
 }
