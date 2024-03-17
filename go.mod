@@ -1,4 +1,4 @@
-module github.com/rulyadhika/fga_digitalent_assignment_2
+module github.com/rulyadhika/go_simple_rest_api_asgmt_2
 
 go 1.21.5
 

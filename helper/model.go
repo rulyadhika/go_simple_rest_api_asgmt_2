@@ -1,8 +1,8 @@
 package helper
 
 import (
-	"github.com/rulyadhika/fga_digitalent_assignment_2/model/domain"
-	"github.com/rulyadhika/fga_digitalent_assignment_2/model/web"
+	"github.com/rulyadhika/go_simple_rest_api_asgmt_2/model/domain"
+	"github.com/rulyadhika/go_simple_rest_api_asgmt_2/model/web"
 )
 
 func toItemResponse(items *[]domain.Item) *[]web.ItemResponse {

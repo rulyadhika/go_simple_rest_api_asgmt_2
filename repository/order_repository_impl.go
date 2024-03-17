@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/rulyadhika/fga_digitalent_assignment_2/exception"
-	"github.com/rulyadhika/fga_digitalent_assignment_2/model/domain"
+	"github.com/rulyadhika/go_simple_rest_api_asgmt_2/exception"
+	"github.com/rulyadhika/go_simple_rest_api_asgmt_2/model/domain"
 )
 
 type OrderRepositoryImpl struct{}

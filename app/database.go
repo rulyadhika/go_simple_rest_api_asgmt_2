@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/rulyadhika/fga_digitalent_assignment_2/helper"
+	"github.com/rulyadhika/go_simple_rest_api_asgmt_2/helper"
 
 	_ "github.com/lib/pq"
 )
